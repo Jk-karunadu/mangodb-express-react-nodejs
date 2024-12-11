@@ -32,7 +32,7 @@ const Login = () => {
   const collectdata = async () => {
     if (!validateForm()) return;
 
-    let result = await fetch('http://localhost:6600/login', {
+    let result = await fetch(`${import.meta.env.VITE_REACT_APP_URL}/login`, {
       method: 'POST',
       body: JSON.stringify({ email, password }),
       headers: {

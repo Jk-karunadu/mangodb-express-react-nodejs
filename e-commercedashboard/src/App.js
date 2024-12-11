@@ -14,7 +14,7 @@ function App() {
   const [currentProduct, setCurrentProduct] = useState({});
 
   const handleAddProduct = async (newProduct) => {
-    const response = await fetch('http://localhost:6600/add', {
+    const response = await fetch(`${import.meta.env.VITE_REACT_APP_URL}/add`, {
       method: 'POST',
       body: JSON.stringify(newProduct),
       headers: {
@@ -34,7 +34,7 @@ function App() {
     console.warn('uProducts:', updatedProduct);
     console.warn('cproduct:', currentProduct);
   
-    const response = await fetch(`http://localhost:6600/update/${currentProduct._id}`, {
+    const response = await fetch(`${import.meta.env.VITE_REACT_APP_URL}/update/${currentProduct._id}`, {
       method: 'PUT',
       body: JSON.stringify(updatedProduct),
       headers: {

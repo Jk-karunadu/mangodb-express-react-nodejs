@@ -36,7 +36,7 @@ const Regist = () => {
   const collectdata = async () => {
     if (!validateForm()) return;
 
-    let result = await fetch('http://localhost:6600/regist', {
+    let result = await fetch(`${import.meta.env.VITE_REACT_APP_URL}/regist`, {
       method: 'POST',
       body: JSON.stringify({ firstname, lastname, email, password }),
       headers: {
