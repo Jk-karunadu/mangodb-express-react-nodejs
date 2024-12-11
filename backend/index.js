@@ -7,6 +7,11 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const jwtkey = "e-com";
 
+
+const dotenv = require("dotenv");
+
+dotenv.config();
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -14,6 +19,7 @@ app.use(cors());
 // app.get("/",(req,res)=>{
 //     res.send("api worked seccusfully..")
 // })
+const port = process.env.PORT || 6600;
 
 app.post("/regist", async (req, res) => {
   let user = new User(req.body);
@@ -182,4 +188,4 @@ app.get("/search/:key", async (req, res) => {
   res.send(product);
 });
 
-app.listen(6600);
+app.listen(port);

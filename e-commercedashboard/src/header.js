@@ -23,19 +23,19 @@ const Header = ({ onShowAddModal }) => {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        {auth ? (
+        {/* {auth ? ( */}
           <Nav className="me-auto">
             <Link className="nav-link" to="/">Products</Link>
             <Link className="nav-link" to="/profile">Profile</Link>
             <Link className="nav-link" to="#" onClick={onShowAddModal}>Add</Link>
             <Link className="nav-link" onClick={logout} to="/regist">Logout ({JSON.parse(auth).firstname})</Link>
           </Nav>
-        ) : (
+        {/* ) : ( */}
           <Nav className="ms-auto">
             <Link className="nav-link" to="/login">Login</Link>
             <Link className="nav-link" to="/regist">Register</Link>
           </Nav>
-        )}
+        {/* )} */}
       </Navbar.Collapse>
     </Navbar>
   );
