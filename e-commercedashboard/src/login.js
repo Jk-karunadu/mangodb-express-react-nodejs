@@ -31,16 +31,22 @@ const Login = () => {
 
   const collectdata = async () => {
     if (!validateForm()) return;
+    const apiUrl = process.env.REACT_APP_API_URL;
+console.log("API URL:", apiUrl); // Should print: http://localhost:6600
+// Should print: http://localhost:6600
 
-    let result = await fetch(`${import.meta.env.VITE_REACT_APP_URL}/login`, {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+
+let result = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
+  method: 'POST',
+  body: JSON.stringify({ email, password }),
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 
     result = await result.json();
+    console.log(result)
     if (result.auth) {
       localStorage.setItem("user", JSON.stringify(result.user));
       localStorage.setItem("token", JSON.stringify(result.auth));

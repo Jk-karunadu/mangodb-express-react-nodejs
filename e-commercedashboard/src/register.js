@@ -36,7 +36,7 @@ const Regist = () => {
   const collectdata = async () => {
     if (!validateForm()) return;
 
-    let result = await fetch(`${import.meta.env.VITE_REACT_APP_URL}/regist`, {
+    let result = await fetch(`${process.env.REACT_APP_API_URL}/regist`, {
       method: 'POST',
       body: JSON.stringify({ firstname, lastname, email, password }),
       headers: {
@@ -44,7 +44,9 @@ const Regist = () => {
       }
     });
 
+    console.log(result)
     result = await result.json();
+
     if (result) {
       localStorage.setItem("user", JSON.stringify(result.result));
       localStorage.setItem("token", JSON.stringify(result.auth));

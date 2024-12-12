@@ -3,84 +3,86 @@ const config = require("./databaseconfig/config");
 const User = require("./databaseconfig/Users");
 const Product = require("./databaseconfig/products");
 const Search = require("./databaseconfig/searchprod");
-const cors = require("cors");
+
 const jwt = require("jsonwebtoken");
-const jwtkey = "e-com";
-
-
 const dotenv = require("dotenv");
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+const cors = require('cors');
+app.use(cors({
+  origin: 'http://localhost:3000',
+}));
 
-// app.get("/",(req,res)=>{
-//     res.send("api worked seccusfully..")
-// })
+
+const jwtkey = process.env.JWT_SECRET || "default-secret";
 const port = process.env.PORT || 6600;
 
 app.post("/regist", async (req, res) => {
-  let user = new User(req.body);
-  let result = await user.save();
-  result = result.toObject();
-  delete result.password;
+  console.log(req.body)
+  try {
+    console.log(req.body)
+    let user = new User(req.body);
+    let result = await user.save();
+    result = result.toObject();
+    delete result.password;
 
-  jwt.sign({ result }, jwtkey, { expiresIn: "2h" }, (err, token) => {
-    if (err) {
-      res.send({ result: "something went wrong,please try again latter" });
-    }
-    res.send({ result, auth: token });
-  });
-  // let user = await User.findOne(req.body).select("-password")
-
-  // //res.send("success")
-
-  // if(user){
-
-  //  res.send(user)
-
-  // }
-  // else{
-  //  res.send("no valid data found...");
-
-  // }
+    jwt.sign({ result }, jwtkey, { expiresIn: "2h" }, (err, token) => {
+      if (err) {
+        console.error("JWT signing error:", err);
+        res.status(500).send({ result: "Failed to generate token. Please try again later." });
+      } else {
+        res.send({ result, auth: token });
+      }
+    });
+  } catch (error) {
+    console.error("Registration error:", error);
+    res.status(500).send({ result: "Registration failed. Please try again." });
+  }
 });
 
 app.post("/login", async (req, res) => {
-  if (req.body.email && req.body.password) {
-    let user = await User.findOne(req.body).select("-password");
+  try {
+    if (req.body.email && req.body.password) {
+      let user = await User.findOne(req.body).select("-password");
 
-    if (user) {
-      jwt.sign({ user }, jwtkey, { expiresIn: "2h" }, (err, token) => {
-        if (err) {
-          res.send({ result: "something went wrong,please try again latter" });
-        }
-        res.send({ user, auth: token });
-      });
+      if (user) {
+        jwt.sign({ user }, jwtkey, { expiresIn: "2h" }, (err, token) => {
+          if (err) {
+            console.error("JWT signing error:", err);
+            res.status(500).send({ result: "Failed to generate token. Please try again later." });
+          } else {
+            res.send({ user, auth: token });
+          }
+        });
+      } else {
+        res.status(404).send({ result: "Invalid credentials." });
+      }
     } else {
-      res.send({ result: "no valid data" });
+      res.status(400).send({ result: "Please provide email and password." });
     }
-  } else {
-    res.send({ result: "no valid data" });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).send({ result: "Login failed. Please try again." });
   }
 });
 
 function verifycation(req, res, next) {
-  let token = req.header["authorization"];
+  let token = req.headers["authorization"];
   if (token) {
-    token = token.split("")[1];
-    console.warn("middleware called if", token);
+    token = token.split(" ")[1];
+    console.warn("Middleware called with token:", token);
     jwt.verify(token, jwtkey, (err, valid) => {
       if (err) {
-        res.status(401).send({ result: "please add valid token" });
+        res.status(401).send({ result: "Please provide a valid token" });
       } else {
         next();
       }
     });
   } else {
-    res.status(403).send({ result: "please add token with header" });
+    res.status(403).send({ result: "Please add a token in the header" });
   }
 }
 
@@ -187,5 +189,11 @@ app.get("/search/:key", async (req, res) => {
 
   res.send(product);
 });
+
+
+
+
+
+
 
 app.listen(port);

@@ -13,7 +13,7 @@ const Product = ({ onUpdateProduct }) => {
   }, [updateTrigger]); // Refetch data when updateTrigger changes
 
   const collectdata = async () => {
-    let result = await fetch(`${import.meta.env.VITE_REACT_APP_URL}`, {
+    let result = await fetch(`${process.env.REACT_APP_API_URL}`, {
       headers: {
         authorization: `bearer ${JSON.parse(localStorage.getItem("token"))}`
       }
@@ -25,7 +25,7 @@ const Product = ({ onUpdateProduct }) => {
   const search = async (e) => {
     setdata(e.target.value);
     let key = e.target.value;
-    let result = await fetch(`${import.meta.env.VITE_REACT_APP_URL}/search/${key}`);
+    let result = await fetch(`${process.env.REACT_APP_API_URL}/search/${key}`);
     result = await result.json();
     if (result) {
       setprod(result);
@@ -38,7 +38,7 @@ const Product = ({ onUpdateProduct }) => {
   };
 
   const deletedata = async (_id) => {
-    let dlt = await fetch(`${import.meta.env.VITE_REACT_APP_URL}/delete`, {
+    let dlt = await fetch(`${process.env.REACT_APP_API_URL}/delete`, {
       method: 'delete',
       body: JSON.stringify({ _id }),
       headers: {
